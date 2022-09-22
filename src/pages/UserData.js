@@ -255,7 +255,7 @@ export default function User() {
                               <TableCell align="left">
                                 <Stack direction="row" alignItems="center" spacing={2}>
                                   <Typography variant="body2" noWrap>
-                                    {createdAt}
+                                    {new Date(createdAt).toLocaleDateString()}
                                   </Typography>
                                 </Stack>
                               </TableCell>

@@ -2,6 +2,8 @@ import { Navigate, useRoutes } from 'react-router-dom';
 // layouts
 import DashboardLayout from './layouts/dashboard';
 import LogoOnlyLayout from './layouts/LogoOnlyLayout';
+import LocalStorageWrapper from './LocalStroageWrapper';
+
 //
 import UserData from './pages/UserData';
 import Login from './pages/Login';
@@ -12,21 +14,29 @@ import AccountView from './pages/AccountView';
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  const checkLogin = () =>{
+    const token = LocalStorageWrapper.getItem("token");
+    console.log("token",token)
+    return !!token;
+  }
+
+  const isLoggedIn = checkLogin();
+
   return useRoutes([
     {
       path: '/dashboard',
-      element: <DashboardLayout />,
+      element: <Protected auth={isLoggedIn}><DashboardLayout /></Protected>,
       children: [
         {
           path: 'clients',
-          element: <UserData />,
+          element: <Protected auth={isLoggedIn}><UserData /></Protected>,
         },
       ],
     },
     {
       path: '/account',
-      element: <DashboardLayout />,
-      children: [{ path: 'settings', element: <AccountView /> }],
+      element: <Protected auth={isLoggedIn}><DashboardLayout /></Protected>,
+      children: [{ path: 'settings', element: <Protected auth={isLoggedIn}><AccountView /></Protected> }],
     },
     {
       path: 'login',
@@ -38,9 +48,9 @@ export default function Router() {
     },
     {
       path: '/',
-      element: <LogoOnlyLayout />,
+      element: <Protected auth={isLoggedIn}><LogoOnlyLayout /></Protected>,
       children: [
-        { path: '/', element: <Navigate to="/dashboard/clients" /> },
+        { path: '/', element: <Protected auth={isLoggedIn}><Navigate to="/dashboard/clients" /></Protected> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],
