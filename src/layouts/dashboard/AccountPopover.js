@@ -43,7 +43,7 @@ export default function AccountPopover() {
 
   const handleLogout = () => {
     setOpen(null);
-    LocalStorageWrapper.setItem("token",null)
+    LocalStorageWrapper.setItem("token","")
     navigate('/login');
   };
 

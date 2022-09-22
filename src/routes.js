@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
 import AccountView from './pages/AccountView';
+import Protected from './ProtectedRoute';
 
 // ----------------------------------------------------------------------
 
