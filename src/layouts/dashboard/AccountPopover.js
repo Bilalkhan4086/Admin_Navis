@@ -7,6 +7,7 @@ import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton } from '@
 import MenuPopover from '../../components/MenuPopover';
 // mocks_
 import account from '../../_mock/account';
+import LocalStorageWrapper from '../../LocalStroageWrapper';
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +43,7 @@ export default function AccountPopover() {
 
   const handleLogout = () => {
     setOpen(null);
+    LocalStorageWrapper.setItem("token",null)
     navigate('/login');
   };
 

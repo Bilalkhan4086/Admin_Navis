@@ -14,8 +14,9 @@ import {
   TablePagination,
   Box,
 } from '@mui/material';
-import axios from 'axios';
 import {useSnackbar} from "notistack"
+import { adminRoutes } from "../api/requests";
+
 // components
 import ShowHideColumn from '../components/ShowHideColumn';
 import Page from '../components/Page';
@@ -31,6 +32,7 @@ const TABLE_HEAD = [
   { id: 'fullName', label: 'Full Name', alignRight: false },
   { id: 'userName', label: 'User Name', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
+  { id: 'status', label: 'Status', alignRight: false },
   { id: 'createdAt', label: 'Created At', alignRight: false },
   { id: 'Actions', label: 'Actions', alignRight: false },
 ];
@@ -110,11 +112,8 @@ export default function User() {
 
   const fetchUserData = async () => {
     try{
-      const { data } = await axios.get('http://localhost:5000/admin/details/getAllUsers', {
-      headers: {
-        'Authorization': `${window && window.localStorage.getItem('token')}`,
-      },
-    });
+      const { data } = await adminRoutes.getAllUsers();
+      console.log("data",data)
     setUserData(data.users);
     }
     catch(e){
@@ -164,7 +163,7 @@ export default function User() {
   const isUserNotFound = filteredUsers.length === 0;
 
   return (
-    <Page title="Facebook">
+    <Page title="Clients">
       <Container maxWidth="xl">
         <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
           <Typography variant="h4" gutterBottom>
@@ -203,7 +202,7 @@ export default function User() {
                     />
                     <TableBody>
                       {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
-                        const { fullName, userName, createdAt, role } = row;
+                        const { fullName, userName, createdAt, role, status } = row;
                         // const isItemSelected = selected.indexOf(name) !== -1;
 
                         return (
@@ -243,6 +242,15 @@ export default function User() {
                                 </Stack>
                               </TableCell>
                             )}
+                            {!columnsState.status && (
+                              <TableCell align="left">
+                                <Stack direction="row" alignItems="center" spacing={2}>
+                                  <Typography variant="body2" noWrap>
+                                    {status}
+                                  </Typography>
+                                </Stack>
+                              </TableCell>
+                            )}
                             {!columnsState.createdAt && (
                               <TableCell align="left">
                                 <Stack direction="row" alignItems="center" spacing={2}>
@@ -253,7 +261,7 @@ export default function User() {
                               </TableCell>
                             )}
                             <TableCell align="left">
-                              <UserMoreMenu />
+                              <UserMoreMenu status={status} userName={userName} toggle={()=>{setFetchDataOnCreateNewUser(!fetchDataOnCreateNewUser)}}/>
                             </TableCell>
                           </TableRow>
                         );

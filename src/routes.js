@@ -7,7 +7,6 @@ import UserData from './pages/UserData';
 import Login from './pages/Login';
 import NotFound from './pages/Page404';
 import Register from './pages/Register';
-import DashboardApp from './pages/DashboardApp';
 import AccountView from './pages/AccountView';
 
 // ----------------------------------------------------------------------
@@ -18,13 +17,8 @@ export default function Router() {
       path: '/dashboard',
       element: <DashboardLayout />,
       children: [
-        { path: '', element: <DashboardApp /> },
         {
-          path: 'app',
-          element: <DashboardApp />,
-        },
-        {
-          path: 'user',
+          path: 'clients',
           element: <UserData />,
         },
       ],
@@ -46,7 +40,7 @@ export default function Router() {
       path: '/',
       element: <LogoOnlyLayout />,
       children: [
-        { path: '/', element: <Navigate to="/dashboard/app" /> },
+        { path: '/', element: <Navigate to="/dashboard/clients" /> },
         { path: '404', element: <NotFound /> },
         { path: '*', element: <Navigate to="/404" /> },
       ],

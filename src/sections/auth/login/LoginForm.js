@@ -1,8 +1,8 @@
 import * as Yup from 'yup';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import {useSnackbar} from "notistack";
+
 
 // form
 import { useForm } from 'react-hook-form';
@@ -10,9 +10,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
 import { Link, Stack, IconButton, InputAdornment,Typography } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
+import { adminRoutes } from '../../../api/requests/index';
+
 // components
 import Iconify from '../../../components/Iconify';
 import { FormProvider, RHFTextField, RHFCheckbox } from '../../../components/hook-form';
+import LocalStorageWrapper from '../../../LocalStroageWrapper';
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
@@ -44,21 +47,17 @@ export default function LoginForm() {
 
   const onSubmit = async () => {
     try {
-    const {data} = await axios.post("http://localhost:5000/admin/login",{
+    const {data} = await adminRoutes.login({
       userName:getValues().userName,
       password:getValues().password
     })
      if(data.success && data.role === "admin"){
-      navigate('/dashboard/user', { replace: true });
+      LocalStorageWrapper.setItem("token",`Bearer ${data.token}`)
+      navigate('/dashboard/clients', { replace: true });
       enqueueSnackbar('Successfully logged In', {
         variant: 'success',
       });
     }
-     else if(data.success && data.role === "client"){
-      enqueueSnackbar('Cannot access route with client role', {
-        variant: 'warning',
-      });
-     }
     }
     catch(e){
       enqueueSnackbar(e.response.data.error, {

@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
 });
 
 const apiClient = (config) => {
-  return new Promise(function (resolve, reject) {
+  return new Promise( (resolve, reject) => {
     axiosInstance(config)
       .then((res) => resolve(res))
       .catch((err) => {

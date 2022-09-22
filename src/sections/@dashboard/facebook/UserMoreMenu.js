@@ -1,15 +1,37 @@
 import { useRef, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import {useSnackbar} from "notistack"
+
 // material
 import { Menu, MenuItem, IconButton, ListItemIcon, ListItemText } from '@mui/material';
+import { adminRoutes } from '../../../api/requests/index';
+
 // component
 import Iconify from '../../../components/Iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserMoreMenu() {
+export default function UserMoreMenu({status,userName,toggle}) {
+  const {enqueueSnackbar} = useSnackbar();
   const ref = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
+  const active = status === "Active";
+  const changeStatus = async(statusAfterChange) =>{
+    try{
+      const {data} = await adminRoutes.changeUserStatus({userName,statusAfterChange})
+    if(data.success){
+      toggle();
+      enqueueSnackbar("Status Updated", {
+        variant: 'success',
+      })
+    }
+  }catch(e){
+    enqueueSnackbar(e.response.data.error, {
+      variant: 'error',
+    })
+  }
+  setIsOpen(false)
+  }
+
 
   return (
     <>
@@ -27,18 +49,11 @@ export default function UserMoreMenu() {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       >
-        <MenuItem sx={{ color: 'text.secondary' }}>
+        <MenuItem sx={{ color: 'text.secondary' }} onClick={()=>{changeStatus(active ? "Disabled" : "Active")}} >
           <ListItemIcon>
-            <Iconify icon="eva:trash-2-outline" width={24} height={24} />
+            <Iconify icon={active ? "eva:trash-2-outline" : "eva:edit-fill"} width={24} height={24} />
           </ListItemIcon>
-          <ListItemText primary="Disable" primaryTypographyProps={{ variant: 'body2' }} />
-        </MenuItem>
-
-        <MenuItem component={RouterLink} to="#" sx={{ color: 'text.secondary' }}>
-          <ListItemIcon>
-            <Iconify icon="eva:edit-fill" width={24} height={24} />
-          </ListItemIcon>
-          <ListItemText primary="Enable" primaryTypographyProps={{ variant: 'body2' }} />
+          <ListItemText primary={active ? "Disable" : "Active"} primaryTypographyProps={{ variant: 'body2' }} />
         </MenuItem>
       </Menu>
     </>

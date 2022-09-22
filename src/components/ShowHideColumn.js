@@ -1,9 +1,9 @@
 import React, { useRef, memo, useState } from 'react';
-import axios from 'axios';
 import { Box, Button, InputAdornment,IconButton, Modal, SvgIcon, TextField, toggleButtonClasses, Typography } from '@mui/material';
 import Add from '@mui/icons-material/Add';
 import {useSnackbar} from "notistack"
 
+import { adminRoutes } from '../api/requests/index';
 
 import Iconify from './Iconify';
 // import IconButton from 'src/theme/overrides/IconButton';
@@ -32,7 +32,7 @@ const ShowHideColumn = ({toggle}) => {
   };
   const createNewUser = async () => {
     try{
-      await axios.post('http://localhost:5000/admin/client/create', userDetails);
+      await adminRoutes.createNewClient(userDetails);
     toggle();
     enqueueSnackbar("User Successfully Created", {
       variant: 'success',
