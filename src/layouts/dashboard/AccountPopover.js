@@ -43,7 +43,8 @@ export default function AccountPopover() {
 
   const handleLogout = () => {
     setOpen(null);
-    LocalStorageWrapper.setItem("token","")
+    LocalStorageWrapper.setItem("jwtAccessToken","")
+    LocalStorageWrapper.setItem("jwtRefreshToken","")
     navigate('/login');
   };
 

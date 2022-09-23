@@ -6,17 +6,23 @@ const contentTypeHeader = {
   "Content-Type": "application/json",
 };
 
-const getAuthenticatedHeaders = (token) => {
+const getAuthenticatedHeaders = (access=true) => {
   return {
     ...contentTypeHeader,
-    "Authorization": getAccessToken(),
+    "Authorization": access ? getAccessToken() : getRefreshToken(),
   };
 };
 
-// get refresh token
+// get access token
 const getAccessToken = () => {
-  const token = LocalStorageWrapper.getItem("token");
-  return `${token}`;
+  const jwtAccessToken = LocalStorageWrapper.getItem("jwtAccessToken");
+  return `${jwtAccessToken}`;
+};
+
+// get refresh token
+const getRefreshToken = () => {
+  const jwtRefreshToken = LocalStorageWrapper.getItem("jwtRefreshToken");
+  return `${jwtRefreshToken}`;
 };
 
 const createReqObject = (url, method, headers, data = {}) => {
@@ -38,16 +44,17 @@ export const adminRoutes = {
   },
 
   getAllUsers: async  () => {
-    const token =  LocalStorageWrapper.getItem("token");
-    const response = await apiClient(createReqObject(`/admin/details/getAllUsers`, "GET", getAuthenticatedHeaders(token)));
+    const response = await apiClient(createReqObject(`/admin/details/getAllUsers`, "GET", getAuthenticatedHeaders()));
     return response;
   },
 
-
+  getRefresh: async  () => {
+    const response = await apiClient(createReqObject(`/refresh`, "GET", getAuthenticatedHeaders(false)));
+    return response;
+  },
 
   changeUserStatus: async  ({userName,statusAfterChange}) => {
-    const token =  LocalStorageWrapper.getItem("token");
-    const response = await apiClient(createReqObject(`/admin/client/change-status`, "PUT", getAuthenticatedHeaders(token),{
+    const response = await apiClient(createReqObject(`/admin/client/change-status`, "PUT", getAuthenticatedHeaders(),{
       userName,
       status:statusAfterChange
     }));
@@ -56,8 +63,7 @@ export const adminRoutes = {
 
 
   createNewClient: async  ({fullName,userName, password}) => {
-    const token =  LocalStorageWrapper.getItem("token");
-    const response = await apiClient(createReqObject("/admin/client/create", "POST", getAuthenticatedHeaders(token), 
+    const response = await apiClient(createReqObject("/admin/client/create", "POST", getAuthenticatedHeaders(), 
     {
       fullName,
       userName,

@@ -52,7 +52,8 @@ export default function LoginForm() {
       password:getValues().password
     })
      if(data.success && data.role === "admin"){
-      LocalStorageWrapper.setItem("token",`Bearer ${data.token}`)
+      LocalStorageWrapper.setItem("jwtAccessToken",`Bearer ${data.token}`)
+      LocalStorageWrapper.setItem("jwtRefreshToken",`Bearer ${data.refreshToken}`)
       navigate('/dashboard/clients', { replace: true });
       enqueueSnackbar('Successfully logged In', {
         variant: 'success',

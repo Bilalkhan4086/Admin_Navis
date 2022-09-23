@@ -15,10 +15,10 @@ import Protected from './ProtectedRoute';
 // ----------------------------------------------------------------------
 
 export default function Router() {
+
   const checkLogin = () =>{
-    const token = LocalStorageWrapper.getItem("token");
-    console.log("token",token)
-    return !!token;
+    const jwtAccessToken = LocalStorageWrapper.getItem("jwtAccessToken");
+    return !!jwtAccessToken;
   }
 
   const isLoggedIn = checkLogin();
